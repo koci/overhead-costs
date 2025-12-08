@@ -1,6 +1,6 @@
 <?php
 /**
- * Re�ijska dela - Bele�enje ur dela v proizvodnji
+ * Režijska dela - Beleženje ur dela v proizvodnji
  * Lokacija: C:\BriPHP\bxroot\apps\overhead-tracker\report.php
  */
 ?>
@@ -9,7 +9,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Re�ijska dela | Bele�enje ur dela v proizvodnji</title>
+    <title>Režijska dela | Beleženje ur dela v proizvodnji</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
@@ -427,8 +427,8 @@
     <div class="container">
         <header class="header">
             <div>
-                <h1>Re�ijska dela</h1>
-                <div class="header-subtitle">Bele�enje ur dela v proizvodnji</div>
+                <h1>Režijska dela</h1>
+                <div class="header-subtitle">Beleženje ur dela v proizvodnji</div>
             </div>
             <button class="btn" id="pdf-btn" onclick="generatePDF()" disabled>
                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
@@ -449,7 +449,7 @@
                 <select class="filter-select" id="group-filter-1" onchange="applyFilters()">
                     <option value="none">Brez grupiranja</option>
                     <option value="location" selected>Lokacija</option>
-                    <option value="cost-center">Stro�kovno mesto</option>
+                    <option value="cost-center">Stroškovno mesto</option>
                     <option value="employment-type">Tip zaposlitve</option>
                     <option value="dn">Delovni nalog</option>
                 </select>
@@ -459,7 +459,7 @@
                 <select class="filter-select" id="group-filter-2" onchange="applyFilters()">
                     <option value="none" selected>Brez</option>
                     <option value="location">Lokacija</option>
-                    <option value="cost-center">Stro�kovno mesto</option>
+                    <option value="cost-center">Stroškovno mesto</option>
                     <option value="employment-type">Tip zaposlitve</option>
                     <option value="dn">Delovni nalog</option>
                 </select>
@@ -474,7 +474,7 @@
                     <div class="dn-dropdown" id="dn-dropdown">
                         <div class="dn-dropdown-header">
                             <span style="font-size:10px;font-weight:600;color:var(--text-secondary)">Izberi DN</span>
-                            <div class="dn-dropdown-actions"><a onclick="selectAllDN()">Vse</a><a onclick="deselectAllDN()">Po�isti</a></div>
+                            <div class="dn-dropdown-actions"><a onclick="selectAllDN()">Vse</a><a onclick="deselectAllDN()">Počisti</a></div>
                         </div>
                         <div id="dn-options"></div>
                     </div>
@@ -484,7 +484,7 @@
         <div class="kpi-row">
             <div class="kpi-card"><div class="kpi-value" id="kpi-entries">--</div><div class="kpi-label">Evidenc</div><div class="kpi-change" id="kpi-entries-change">--</div></div>
             <div class="kpi-card"><div class="kpi-value" id="kpi-hours">--</div><div class="kpi-label">Skupaj ur</div><div class="kpi-change" id="kpi-hours-change">--</div></div>
-            <div class="kpi-card"><div class="kpi-value" id="kpi-avg">--</div><div class="kpi-label">Povpre�je</div><div class="kpi-change" id="kpi-avg-change">--</div></div>
+            <div class="kpi-card"><div class="kpi-value" id="kpi-avg">--</div><div class="kpi-label">Povprečje</div><div class="kpi-change" id="kpi-avg-change">--</div></div>
             <div class="kpi-card"><div class="kpi-value" id="kpi-employees">--</div><div class="kpi-label">Zaposlenih</div><div class="kpi-change" id="kpi-employees-change">--</div></div>
         </div>
         <div class="main-layout">
@@ -574,7 +574,7 @@
         function getTimeColor(h){if(h<9)return'#0d9488';if(h<12)return'#2563eb';if(h<15)return'#d97706';return'#e11d48';}
         function formatHour(h){if(!h||isNaN(h))return'--:--';const hr=Math.floor(h),mn=Math.round((h-hr)*60);return`${hr.toString().padStart(2,'0')}:${mn.toString().padStart(2,'0')}`;}
         function formatTimeFromDate(d){if(!d)return'--:--';return d.toLocaleTimeString('sl-SI',{hour:'2-digit',minute:'2-digit'});}
-        function renderHeatmap(f){const days=['Pon','Tor','Sre','�et','Pet','Sob','Ned'],heatData={};days.forEach((_,i)=>{heatData[i]={};for(let h=0;h<24;h++)heatData[i][h]=0;});f.forEach(e=>{if(e.checkin){let di=e.datePosting.getDay()-1;if(di<0)di=6;heatData[di][e.checkin.getHours()]++;}});let max=1;Object.values(heatData).forEach(hrs=>Object.values(hrs).forEach(c=>{if(c>max)max=c;}));let html='<div class="heatmap-header"></div>';for(let h=0;h<24;h++)html+=`<div class="heatmap-header">${h.toString().padStart(2,'0')}</div>`;days.forEach((day,di)=>{html+=`<div class="heatmap-row-label">${day}</div>`;for(let h=0;h<24;h++){const cnt=heatData[di][h],int=cnt===0?0:Math.ceil((cnt/max)*5);html+=`<div class="heatmap-cell" data-intensity="${int}"><div class="heatmap-tooltip">${days[di]} ${h}:00 - ${cnt}</div></div>`;}});document.getElementById('heatmap').innerHTML=html;}
+        function renderHeatmap(f){const days=['Pon','Tor','Sre','Čet','Pet','Sob','Ned'],heatData={};days.forEach((_,i)=>{heatData[i]={};for(let h=0;h<24;h++)heatData[i][h]=0;});f.forEach(e=>{if(e.checkin){let di=e.datePosting.getDay()-1;if(di<0)di=6;heatData[di][e.checkin.getHours()]++;}});let max=1;Object.values(heatData).forEach(hrs=>Object.values(hrs).forEach(c=>{if(c>max)max=c;}));let html='<div class="heatmap-header"></div>';for(let h=0;h<24;h++)html+=`<div class="heatmap-header">${h.toString().padStart(2,'0')}</div>`;days.forEach((day,di)=>{html+=`<div class="heatmap-row-label">${day}</div>`;for(let h=0;h<24;h++){const cnt=heatData[di][h],int=cnt===0?0:Math.ceil((cnt/max)*5);html+=`<div class="heatmap-cell" data-intensity="${int}"><div class="heatmap-tooltip">${days[di]} ${h}:00 - ${cnt}</div></div>`;}});document.getElementById('heatmap').innerHTML=html;}
         function populateDailyDates(f){const dates=[...new Set(f.map(e=>e.datePosting.toDateString()))].sort((a,b)=>new Date(b)-new Date(a));document.getElementById('daily-date').innerHTML=dates.slice(0,30).map(d=>{const dt=new Date(d);return`<option value="${d}">${dt.toLocaleDateString('sl-SI',{weekday:'short',day:'numeric',month:'short'})}</option>`;}).join('')||'<option value="">Ni podatkov</option>';}
         function renderDailyTimeline(){const selDate=document.getElementById('daily-date').value;if(!selDate){document.getElementById('daily-timeline').innerHTML='<div class="no-data">Ni podatkov</div>';return;}const f=getFilteredEntries().filter(e=>e.datePosting.toDateString()===selDate&&e.checkin);document.getElementById('timeline-hours').innerHTML=Array.from({length:9},(_,i)=>`<span class="timeline-hour-label">${6+i*2}:00</span>`).join('');const byEmp={};f.forEach(e=>{if(!byEmp[e.employee.id])byEmp[e.employee.id]={employee:e.employee,entries:[]};byEmp[e.employee.id].entries.push(e);});document.getElementById('daily-timeline').innerHTML=Object.values(byEmp).map(data=>{const loc=lokacije.find(l=>l.id===data.employee.location)||{color:'#94a3b8'};let marks='';for(let h=6;h<=22;h++)marks+=`<div class="timeline-hour-mark" style="left:${((h-6)/16)*100}%"></div>`;const ents=data.entries.filter(e=>e.checkin).map(e=>{const sH=e.checkin.getHours()+e.checkin.getMinutes()/60,dur=e.duration||1,eH=sH+dur,sP=Math.max(0,((sH-6)/16)*100),wP=Math.min(100-sP,((eH-sH)/16)*100);return`<div class="timeline-entry" style="left:${sP}%;width:${Math.max(wP,1)}%;background:${loc.color}" title="${e.dn.name}: ${formatTimeFromDate(e.checkin)} (${e.duration.toFixed(1)}h)"></div>`;}).join('');return`<div class="timeline-row"><div class="timeline-label"><div class="avatar employee-avatar" style="background:${loc.color}">${data.employee.initials}</div><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${data.employee.name}</span></div><div class="timeline-bar-container">${marks}${ents}</div></div>`;}).join('')||'<div class="no-data">Ni podatkov za ta dan</div>';}
         function renderSummary(f){const hourCounts={};for(let h=6;h<=20;h++)hourCounts[h]=0;f.forEach(e=>{if(e.checkin){const h=e.checkin.getHours();if(hourCounts[h]!==undefined)hourCounts[h]++;}});const maxH=Math.max(...Object.values(hourCounts),1),peakH=Object.entries(hourCounts).sort((a,b)=>b[1]-a[1])[0]?.[0];document.getElementById('peak-chart').innerHTML=Object.entries(hourCounts).map(([h,c])=>`<div class="peak-bar ${h==peakH?'highlight':''}" style="height:${Math.max((c/maxH)*100,4)}%"></div>`).join('');document.getElementById('peak-labels').innerHTML=Object.keys(hourCounts).filter((_,i)=>i%2===0).map(h=>`<span class="peak-label" style="flex:2">${h}</span>`).join('');const byLoc={};f.forEach(e=>{const loc=lokacije.find(l=>l.id===e.employee.location);const n=loc?.name||e.employee.location||'Neznano';byLoc[n]=(byLoc[n]||0)+(e.duration||0);});const maxLH=Math.max(...Object.values(byLoc),1);document.getElementById('summary-location').innerHTML=Object.entries(byLoc).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([nm,hrs])=>{const loc=lokacije.find(l=>l.name===nm)||{color:'#94a3b8'};return`<div class="summary-item"><span class="summary-label"><span class="summary-dot" style="background:${loc.color}"></span><span class="summary-label-text">${nm}</span></span><span class="summary-value">${hrs.toFixed(0)}h</span></div><div class="summary-bar"><div class="summary-bar-fill" style="width:${(hrs/maxLH)*100}%;background:${loc.color}"></div></div>`;}).join('')||'<div class="no-data">Ni podatkov</div>';const byDN={};f.forEach(e=>{const nm=e.dn.name||e.dn.id;byDN[nm]=(byDN[nm]||0)+(e.duration||0);});document.getElementById('summary-dn').innerHTML=Object.entries(byDN).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([nm,hrs])=>{const dn=delovniNalogi.find(d=>d.name===nm)||{color:'#475569'};return`<div class="summary-item"><span class="summary-label"><span class="summary-dot" style="background:${dn.color}"></span><span class="summary-label-text" title="${nm}">${nm}</span></span><span class="summary-value">${hrs.toFixed(0)}h</span></div>`;}).join('')||'<div class="no-data">Ni podatkov</div>';const byEmp={};f.forEach(e=>{byEmp[e.employee.id]=byEmp[e.employee.id]||{emp:e.employee,hours:0};byEmp[e.employee.id].hours+=e.duration||0;});document.getElementById('summary-employees').innerHTML=Object.values(byEmp).sort((a,b)=>b.hours-a.hours).slice(0,5).map(({emp,hours})=>{const loc=lokacije.find(l=>l.id===emp.location)||{color:'#94a3b8'};return`<div class="summary-item"><span class="summary-label"><span class="summary-dot" style="background:${loc.color}"></span><span class="summary-label-text">${emp.name}</span></span><span class="summary-value">${hours.toFixed(0)}h</span></div>`;}).join('')||'<div class="no-data">Ni podatkov</div>';}
