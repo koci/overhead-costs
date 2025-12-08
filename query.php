@@ -4,10 +4,35 @@
  * Lokacija: C:\BriPHP\bxroot\apps\overhead-tracker\query.php
  */
 
+// Debug mode - nastavi na true za prikaz napak
+$debug = isset($_GET['debug']) && $_GET['debug'] === '1';
+
+if ($debug) {
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+}
+
 header('Content-Type: application/json; charset=utf-8');
 
+// Preveri ali db_config.php obstaja
+$dbConfigPath = __DIR__ . '/../../db_config.php';
+if (!file_exists($dbConfigPath)) {
+    echo json_encode(['error' => 'db_config.php ne obstaja na poti: ' . $dbConfigPath], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
 // Vključi centralno konfiguracijo
-require_once __DIR__ . '/../../db_config.php';
+require_once $dbConfigPath;
+
+// Preveri ali funkcije obstajajo
+if (!function_exists('connectHana')) {
+    echo json_encode(['error' => 'Funkcija connectHana() ne obstaja v db_config.php'], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+if (!function_exists('executeQuery')) {
+    echo json_encode(['error' => 'Funkcija executeQuery() ne obstaja v db_config.php'], JSON_UNESCAPED_UNICODE);
+    exit;
+}
 
 /**
  * Pridobi delovne naloge za režijska dela
@@ -15,11 +40,15 @@ require_once __DIR__ . '/../../db_config.php';
  * @param string $type - current ali previous (za primerjavo)
  * @return array
  */
-function getOverheadWorkOrders($period = 'current-month', $type = 'current') {
+function getOverheadWorkOrders($period = 'current-month', $type = 'current', $debug = false) {
     $conn = connectHana();
 
     if (!$conn) {
-        return ['error' => 'Povezava na bazo ni uspela'];
+        $err = ['error' => 'Povezava na bazo ni uspela'];
+        if ($debug) {
+            $err['odbc_error'] = odbc_errormsg();
+        }
+        return $err;
     }
 
     // Določi datumsko obdobje
@@ -93,11 +122,18 @@ function getOverheadWorkOrders($period = 'current-month', $type = 'current') {
     ";
 
     $result = executeQuery($conn, $sql);
-    odbc_close($conn);
 
     if ($result === false) {
-        return ['error' => 'Napaka pri izvajanju poizvedbe'];
+        $err = ['error' => 'Napaka pri izvajanju poizvedbe'];
+        if ($debug) {
+            $err['odbc_error'] = odbc_errormsg($conn);
+            $err['sql_preview'] = substr($sql, 0, 500) . '...';
+        }
+        odbc_close($conn);
+        return $err;
     }
+
+    odbc_close($conn);
 
     // Pretvori decimalne vrednosti
     foreach ($result as &$row) {
@@ -176,7 +212,20 @@ if (!in_array($type, $validTypes)) {
     $type = 'current';
 }
 
-$data = getOverheadWorkOrders($period, $type);
+$data = getOverheadWorkOrders($period, $type, $debug);
+
+// Dodaj debug info
+if ($debug) {
+    $data = [
+        'debug_info' => [
+            'period' => $period,
+            'type' => $type,
+            'db_config_path' => $dbConfigPath,
+            'record_count' => is_array($data) && !isset($data['error']) ? count($data) : 0
+        ],
+        'data' => $data
+    ];
+}
 
 echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 ?>
