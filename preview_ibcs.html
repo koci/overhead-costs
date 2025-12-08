@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Režijska Dela - IBCS Design Preview</title>
+    <style>
+        :root {
+            --black: #1a1a1a;
+            --dark: #2d2d2d;
+            --gray-900: #404040;
+            --gray-700: #595959;
+            --gray-500: #808080;
+            --gray-300: #b3b3b3;
+            --gray-200: #d9d9d9;
+            --gray-100: #f0f0f0;
+            --white: #ffffff;
+            --accent: #0066cc;
+            --accent-light: #e6f0fa;
+            --negative: #cc3300;
+            --positive: #339966;
+            --font-mono: 'SF Mono', 'Consolas', 'Monaco', monospace;
+            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--gray-100);
+            color: var(--black);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Header - Clean, minimal */
+        .header {
+            background: var(--white);
+            border-bottom: 2px solid var(--black);
+            padding: 20px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .header-title {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .header-title h1 {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            color: var(--black);
+        }
+
+        .header-subtitle {
+            font-size: 13px;
+            color: var(--gray-700);
+            font-weight: 400;
+        }
+
+        .header-meta {
+            text-align: right;
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .header-meta strong {
+            color: var(--black);
+            font-weight: 600;
+        }
+
+        /* Controls */
+        .controls {
+            background: var(--white);
+            padding: 16px 32px;
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray-500);
+            font-weight: 500;
+        }
+
+        .control-select {
+            padding: 8px 32px 8px 12px;
+            border: 1px solid var(--gray-300);
+            background: var(--white);
+            font-size: 13px;
+            font-family: var(--font-sans);
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23595959' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+        }
+
+        .control-select:focus {
+            outline: none;
+            border-color: var(--black);
+        }
+
+        .btn {
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 500;
+            border: 1px solid var(--gray-300);
+            background: var(--white);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s ease;
+        }
+
+        .btn:hover {
+            border-color: var(--black);
+            background: var(--gray-100);
+        }
+
+        .btn-primary {
+            background: var(--black);
+            color: var(--white);
+            border-color: var(--black);
+        }
+
+        .btn-primary:hover {
+            background: var(--dark);
+        }
+
+        .controls-right {
+            margin-left: auto;
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Main Content */
+        .main {
+            padding: 24px 32px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* KPI Row - IBCS style with reference comparison */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: var(--gray-300);
+            margin-bottom: 24px;
+        }
+
+        .kpi-card {
+            background: var(--white);
+            padding: 20px 24px;
+        }
+
+        .kpi-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray-500);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .kpi-value-row {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+        }
+
+        .kpi-value {
+            font-size: 32px;
+            font-weight: 600;
+            font-family: var(--font-mono);
+            letter-spacing: -1px;
+            color: var(--black);
+        }
+
+        .kpi-unit {
+            font-size: 14px;
+            color: var(--gray-500);
+            font-weight: 400;
+        }
+
+        .kpi-comparison {
+            font-size: 12px;
+            color: var(--gray-500);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .kpi-comparison.positive { color: var(--positive); }
+        .kpi-comparison.negative { color: var(--negative); }
+
+        .kpi-sparkline {
+            margin-top: 12px;
+            height: 24px;
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+        }
+
+        .spark-bar {
+            flex: 1;
+            background: var(--gray-200);
+            min-height: 3px;
+        }
+
+        .spark-bar.current {
+            background: var(--black);
+        }
+
+        /* Section */
+        .section {
+            background: var(--white);
+            margin-bottom: 24px;
+        }
+
+        .section-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--black);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 3px;
+            height: 16px;
+            background: var(--black);
+        }
+
+        .section-subtitle {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .section-body {
+            padding: 24px;
+        }
+
+        /* Grid layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 24px;
+        }
+
+        /* IBCS Bar Chart - Horizontal */
+        .bar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .bar-row {
+            display: grid;
+            grid-template-columns: 120px 1fr 60px;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bar-label {
+            font-size: 13px;
+            color: var(--gray-700);
+            text-align: right;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .bar-track {
+            height: 20px;
+            background: var(--gray-100);
+            position: relative;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: var(--black);
+            position: relative;
+        }
+
+        .bar-fill.highlight {
+            background: var(--accent);
+        }
+
+        .bar-reference {
+            position: absolute;
+            top: -2px;
+            bottom: -2px;
+            width: 2px;
+            background: var(--gray-500);
+        }
+
+        .bar-value {
+            font-size: 13px;
+            font-family: var(--font-mono);
+            color: var(--black);
+            text-align: right;
+        }
+
+        /* Heatmap - IBCS style monochrome */
+        .heatmap {
+            display: grid;
+            grid-template-columns: 40px repeat(24, 1fr);
+            gap: 2px;
+            font-size: 11px;
+        }
+
+        .heatmap-header {
+            text-align: center;
+            color: var(--gray-500);
+            padding: 4px 0;
+            font-weight: 500;
+        }
+
+        .heatmap-row-label {
+            text-align: right;
+            padding-right: 8px;
+            color: var(--gray-500);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            font-weight: 500;
+        }
+
+        .heatmap-cell {
+            aspect-ratio: 1;
+            background: var(--gray-100);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-family: var(--font-mono);
+            color: transparent;
+            transition: all 0.15s ease;
+        }
+
+        .heatmap-cell:hover {
+            color: var(--white);
+            transform: scale(1.1);
+            z-index: 1;
+        }
+
+        .heatmap-cell.level-1 { background: var(--gray-200); }
+        .heatmap-cell.level-2 { background: var(--gray-300); }
+        .heatmap-cell.level-3 { background: var(--gray-500); }
+        .heatmap-cell.level-4 { background: var(--gray-700); }
+        .heatmap-cell.level-5 { background: var(--black); }
+
+        .heatmap-legend {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            justify-content: flex-end;
+        }
+
+        .heatmap-legend-label {
+            font-size: 11px;
+            color: var(--gray-500);
+        }
+
+        .heatmap-legend-scale {
+            display: flex;
+            gap: 2px;
+        }
+
+        .heatmap-legend-box {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Timeline - Daily view */
+        .timeline {
+            position: relative;
+            height: 200px;
+            border-left: 1px solid var(--gray-300);
+            border-bottom: 1px solid var(--gray-300);
+            margin-left: 60px;
+        }
+
+        .timeline-grid {
+            position: absolute;
+            inset: 0;
+            display: flex;
+        }
+
+        .timeline-grid-line {
+            flex: 1;
+            border-right: 1px dashed var(--gray-200);
+        }
+
+        .timeline-x-labels {
+            display: flex;
+            margin-left: 60px;
+            margin-top: 4px;
+        }
+
+        .timeline-x-label {
+            flex: 1;
+            text-align: center;
+            font-size: 10px;
+            color: var(--gray-500);
+        }
+
+        .timeline-bar {
+            position: absolute;
+            height: 6px;
+            background: var(--black);
+            border-radius: 1px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .timeline-bar:hover {
+            height: 10px;
+            margin-top: -2px;
+            background: var(--accent);
+        }
+
+        .timeline-bar.location-mp {
+            background: var(--gray-500);
+        }
+
+        .timeline-y-labels {
+            position: absolute;
+            left: -60px;
+            top: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .timeline-y-label {
+            font-size: 10px;
+            color: var(--gray-500);
+            text-align: right;
+            width: 50px;
+        }
+
+        /* Data Table - IBCS style */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .data-table thead {
+            border-bottom: 2px solid var(--black);
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray-700);
+            background: var(--gray-100);
+        }
+
+        .data-table th.numeric {
+            text-align: right;
+        }
+
+        .data-table tbody tr {
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .data-table tbody tr:hover {
+            background: var(--gray-100);
+        }
+
+        .data-table td {
+            padding: 12px 16px;
+            color: var(--gray-900);
+        }
+
+        .data-table td.numeric {
+            text-align: right;
+            font-family: var(--font-mono);
+        }
+
+        .data-table td.highlight {
+            font-weight: 600;
+            color: var(--black);
+        }
+
+        .data-table tfoot {
+            border-top: 2px solid var(--black);
+            font-weight: 600;
+        }
+
+        .data-table tfoot td {
+            padding: 12px 16px;
+            background: var(--gray-100);
+        }
+
+        /* Location indicator */
+        .location-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .location-dot.sora { background: var(--black); }
+        .location-dot.mp { background: var(--gray-500); }
+
+        /* Status/Badge */
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            font-size: 11px;
+            font-weight: 500;
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        /* Footer */
+        .footer {
+            padding: 16px 32px;
+            text-align: center;
+            font-size: 11px;
+            color: var(--gray-500);
+            border-top: 1px solid var(--gray-200);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .kpi-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            .controls {
+                flex-wrap: wrap;
+            }
+            .kpi-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            body { background: white; }
+            .controls { display: none; }
+            .section { break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-title">
+            <h1>Režijska Dela</h1>
+            <span class="header-subtitle">Pregled režijskih delovnih nalogov · BRINOX</span>
+        </div>
+        <div class="header-meta">
+            <div>Obdobje: <strong>December 2024</strong></div>
+            <div>Posodobljeno: 08.12.2024 14:30</div>
+        </div>
+    </header>
+
+    <!-- Controls -->
+    <div class="controls">
+        <div class="control-group">
+            <span class="control-label">Obdobje</span>
+            <select class="control-select">
+                <option selected>Trenutni mesec</option>
+                <option>Prejšnji mesec</option>
+                <option>Od začetka leta</option>
+                <option>Vse</option>
+            </select>
+        </div>
+        <div class="control-group">
+            <span class="control-label">Delovni nalog</span>
+            <select class="control-select">
+                <option selected>Vsi nalogi</option>
+                <option>900001 - Čiščenje</option>
+                <option>900002 - Sestanek</option>
+                <option>900003 - Izobraževanje</option>
+            </select>
+        </div>
+        <div class="controls-right">
+            <button class="btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                </svg>
+                PDF
+            </button>
+            <button class="btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                E-pošta
+            </button>
+            <button class="btn btn-primary">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="1 4 1 10 7 10"/>
+                    <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                </svg>
+                Osveži
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- KPI Cards -->
+        <div class="kpi-row">
+            <div class="kpi-card">
+                <div class="kpi-label">Število vnosov</div>
+                <div class="kpi-value-row">
+                    <span class="kpi-value">1.247</span>
+                    <span class="kpi-comparison positive">↑ 12%</span>
+                </div>
+                <div class="kpi-sparkline">
+                    <div class="spark-bar" style="height: 40%"></div>
+                    <div class="spark-bar" style="height: 55%"></div>
+                    <div class="spark-bar" style="height: 45%"></div>
+                    <div class="spark-bar" style="height: 70%"></div>
+                    <div class="spark-bar" style="height: 60%"></div>
+                    <div class="spark-bar" style="height: 85%"></div>
+                    <div class="spark-bar current" style="height: 100%"></div>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Skupaj ur</div>
+                <div class="kpi-value-row">
+                    <span class="kpi-value">842.5</span>
+                    <span class="kpi-unit">h</span>
+                    <span class="kpi-comparison negative">↓ 3%</span>
+                </div>
+                <div class="kpi-sparkline">
+                    <div class="spark-bar" style="height: 80%"></div>
+                    <div class="spark-bar" style="height: 90%"></div>
+                    <div class="spark-bar" style="height: 85%"></div>
+                    <div class="spark-bar" style="height: 100%"></div>
+                    <div class="spark-bar" style="height: 75%"></div>
+                    <div class="spark-bar" style="height: 70%"></div>
+                    <div class="spark-bar current" style="height: 65%"></div>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Povprečje na vnos</div>
+                <div class="kpi-value-row">
+                    <span class="kpi-value">0.68</span>
+                    <span class="kpi-unit">h</span>
+                </div>
+                <div class="kpi-sparkline">
+                    <div class="spark-bar" style="height: 60%"></div>
+                    <div class="spark-bar" style="height: 65%"></div>
+                    <div class="spark-bar" style="height: 70%"></div>
+                    <div class="spark-bar" style="height: 68%"></div>
+                    <div class="spark-bar" style="height: 72%"></div>
+                    <div class="spark-bar" style="height: 65%"></div>
+                    <div class="spark-bar current" style="height: 68%"></div>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Število zaposlenih</div>
+                <div class="kpi-value-row">
+                    <span class="kpi-value">89</span>
+                    <span class="kpi-comparison positive">↑ 5</span>
+                </div>
+                <div class="kpi-sparkline">
+                    <div class="spark-bar" style="height: 75%"></div>
+                    <div class="spark-bar" style="height: 80%"></div>
+                    <div class="spark-bar" style="height: 82%"></div>
+                    <div class="spark-bar" style="height: 85%"></div>
+                    <div class="spark-bar" style="height: 88%"></div>
+                    <div class="spark-bar" style="height: 92%"></div>
+                    <div class="spark-bar current" style="height: 100%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Two column layout -->
+        <div class="grid-2">
+            <!-- Top Employees -->
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-title">Zaposleni po urah</span>
+                    <span class="section-subtitle">Top 10</span>
+                </div>
+                <div class="section-body">
+                    <div class="bar-chart">
+                        <div class="bar-row">
+                            <span class="bar-label">Janez Novak</span>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width: 100%"></div>
+                                <div class="bar-reference" style="left: 75%"></div>
+                            </div>
+                            <span class="bar-value">42.5</span>
+                        </div>
+                        <div class="bar-row">
+                            <span class="bar-label">Marija Horvat</span>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width: 88%"></div>
+                                <div class="bar-reference" style="left: 75%"></div>
+                            </div>
+                            <span class="bar-value">37.4</span>
+                        </div>
+                        <div class="bar-row">
+                            <span class="bar-label">Peter Kovač</span>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width: 76%"></div>
+                                <div class="bar-reference" style="left: 75%"></div>
+                            </div>
+                            <span class="bar-value">32.3</span>
+                        </div>
+                        <div class="bar-row">
+                            <span class="bar-label">Ana Krajnc</span>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width: 71%"></div>
+                            </div>
+                            <span class="bar-value">30.2</span>
+                        </div>
+                        <div class="bar-row">
+                            <span class="bar-label">Luka Zupan</span>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width: 65%"></div>
+                            </div>
+                            <span class="bar-value">27.6</span>
+                        </div>
+                        <div class="bar-row">
+                            <span class="bar-label">Maja Vidmar</span>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width: 58%"></div>
+                            </div>
+                            <span class="bar-value">24.7</span>
+                        </div>
+                        <div class="bar-row">
+                            <span class="bar-label">Rok Mlakar</span>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width: 52%"></div>
+                            </div>
+                            <span class="bar-value">22.1</span>
+                        </div>
+                        <div class="bar-row">
+                            <span class="bar-label">Nina Kern</span>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width: 47%"></div>
+                            </div>
+                            <span class="bar-value">20.0</span>
+                        </div>
+                        <div class="bar-row">
+                            <span class="bar-label">Gregor Hribar</span>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width: 41%"></div>
+                            </div>
+                            <span class="bar-value">17.4</span>
+                        </div>
+                        <div class="bar-row">
+                            <span class="bar-label">Eva Potočnik</span>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width: 35%"></div>
+                            </div>
+                            <span class="bar-value">14.9</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Location breakdown -->
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-title">Lokacije</span>
+                    <span class="section-subtitle">Primerjava</span>
+                </div>
+                <div class="section-body">
+                    <div class="bar-chart" style="margin-bottom: 32px;">
+                        <div class="bar-row">
+                            <span class="bar-label"><span class="location-dot sora"></span>Šoštanj</span>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width: 65%"></div>
+                            </div>
+                            <span class="bar-value">547.6 h</span>
+                        </div>
+                        <div class="bar-row">
+                            <span class="bar-label"><span class="location-dot mp"></span>Mirna Peč</span>
+                            <div class="bar-track">
+                                <div class="bar-fill location-mp" style="width: 35%"></div>
+                            </div>
+                            <span class="bar-value">294.9 h</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 24px;">
+                        <div class="control-label" style="margin-bottom: 12px;">Delovni nalogi po lokaciji</div>
+                        <div class="bar-chart">
+                            <div class="bar-row">
+                                <span class="bar-label">Čiščenje</span>
+                                <div class="bar-track">
+                                    <div class="bar-fill" style="width: 45%"></div>
+                                    <div class="bar-fill location-mp" style="width: 25%; position: absolute; left: 45%"></div>
+                                </div>
+                                <span class="bar-value">312.4</span>
+                            </div>
+                            <div class="bar-row">
+                                <span class="bar-label">Sestanek</span>
+                                <div class="bar-track">
+                                    <div class="bar-fill" style="width: 30%"></div>
+                                    <div class="bar-fill location-mp" style="width: 15%; position: absolute; left: 30%"></div>
+                                </div>
+                                <span class="bar-value">201.8</span>
+                            </div>
+                            <div class="bar-row">
+                                <span class="bar-label">Izobraževanje</span>
+                                <div class="bar-track">
+                                    <div class="bar-fill" style="width: 20%"></div>
+                                    <div class="bar-fill location-mp" style="width: 12%; position: absolute; left: 20%"></div>
+                                </div>
+                                <span class="bar-value">142.5</span>
+                            </div>
+                            <div class="bar-row">
+                                <span class="bar-label">Transport</span>
+                                <div class="bar-track">
+                                    <div class="bar-fill" style="width: 15%"></div>
+                                    <div class="bar-fill location-mp" style="width: 8%; position: absolute; left: 15%"></div>
+                                </div>
+                                <span class="bar-value">98.3</span>
+                            </div>
+                            <div class="bar-row">
+                                <span class="bar-label">Drugo</span>
+                                <div class="bar-track">
+                                    <div class="bar-fill" style="width: 10%"></div>
+                                    <div class="bar-fill location-mp" style="width: 5%; position: absolute; left: 10%"></div>
+                                </div>
+                                <span class="bar-value">67.5</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Heatmap -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-title">Urna analiza</span>
+                <span class="section-subtitle">Intenziteta prijav po dnevih in urah</span>
+            </div>
+            <div class="section-body">
+                <div class="heatmap">
+                    <!-- Header row -->
+                    <div class="heatmap-header"></div>
+                    <div class="heatmap-header">6</div>
+                    <div class="heatmap-header">7</div>
+                    <div class="heatmap-header">8</div>
+                    <div class="heatmap-header">9</div>
+                    <div class="heatmap-header">10</div>
+                    <div class="heatmap-header">11</div>
+                    <div class="heatmap-header">12</div>
+                    <div class="heatmap-header">13</div>
+                    <div class="heatmap-header">14</div>
+                    <div class="heatmap-header">15</div>
+                    <div class="heatmap-header">16</div>
+                    <div class="heatmap-header">17</div>
+                    <div class="heatmap-header">18</div>
+                    <div class="heatmap-header">19</div>
+                    <div class="heatmap-header">20</div>
+                    <div class="heatmap-header">21</div>
+                    <div class="heatmap-header">22</div>
+                    <div class="heatmap-header">23</div>
+                    <div class="heatmap-header">0</div>
+                    <div class="heatmap-header">1</div>
+                    <div class="heatmap-header">2</div>
+                    <div class="heatmap-header">3</div>
+                    <div class="heatmap-header">4</div>
+                    <div class="heatmap-header">5</div>
+
+                    <!-- Monday -->
+                    <div class="heatmap-row-label">Pon</div>
+                    <div class="heatmap-cell level-2">3</div>
+                    <div class="heatmap-cell level-4">18</div>
+                    <div class="heatmap-cell level-5">32</div>
+                    <div class="heatmap-cell level-5">28</div>
+                    <div class="heatmap-cell level-4">22</div>
+                    <div class="heatmap-cell level-3">15</div>
+                    <div class="heatmap-cell level-2">8</div>
+                    <div class="heatmap-cell level-3">12</div>
+                    <div class="heatmap-cell level-4">20</div>
+                    <div class="heatmap-cell level-3">14</div>
+                    <div class="heatmap-cell level-2">6</div>
+                    <div class="heatmap-cell level-1">2</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell level-1">1</div>
+                    <div class="heatmap-cell level-2">4</div>
+                    <div class="heatmap-cell level-1">2</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell level-1">1</div>
+
+                    <!-- Tuesday -->
+                    <div class="heatmap-row-label">Tor</div>
+                    <div class="heatmap-cell level-2">4</div>
+                    <div class="heatmap-cell level-4">20</div>
+                    <div class="heatmap-cell level-5">35</div>
+                    <div class="heatmap-cell level-5">30</div>
+                    <div class="heatmap-cell level-4">24</div>
+                    <div class="heatmap-cell level-3">16</div>
+                    <div class="heatmap-cell level-2">7</div>
+                    <div class="heatmap-cell level-3">11</div>
+                    <div class="heatmap-cell level-4">19</div>
+                    <div class="heatmap-cell level-3">13</div>
+                    <div class="heatmap-cell level-2">5</div>
+                    <div class="heatmap-cell level-1">2</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell level-1">1</div>
+                    <div class="heatmap-cell level-2">3</div>
+                    <div class="heatmap-cell level-1">1</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell level-1">2</div>
+
+                    <!-- Wednesday -->
+                    <div class="heatmap-row-label">Sre</div>
+                    <div class="heatmap-cell level-2">3</div>
+                    <div class="heatmap-cell level-4">19</div>
+                    <div class="heatmap-cell level-5">31</div>
+                    <div class="heatmap-cell level-5">27</div>
+                    <div class="heatmap-cell level-4">21</div>
+                    <div class="heatmap-cell level-3">14</div>
+                    <div class="heatmap-cell level-2">9</div>
+                    <div class="heatmap-cell level-3">13</div>
+                    <div class="heatmap-cell level-4">18</div>
+                    <div class="heatmap-cell level-3">12</div>
+                    <div class="heatmap-cell level-2">4</div>
+                    <div class="heatmap-cell level-1">1</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell level-2">5</div>
+                    <div class="heatmap-cell level-1">2</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell level-1">1</div>
+
+                    <!-- Thursday -->
+                    <div class="heatmap-row-label">Čet</div>
+                    <div class="heatmap-cell level-2">5</div>
+                    <div class="heatmap-cell level-4">21</div>
+                    <div class="heatmap-cell level-5">33</div>
+                    <div class="heatmap-cell level-5">29</div>
+                    <div class="heatmap-cell level-4">23</div>
+                    <div class="heatmap-cell level-3">17</div>
+                    <div class="heatmap-cell level-2">8</div>
+                    <div class="heatmap-cell level-3">10</div>
+                    <div class="heatmap-cell level-4">17</div>
+                    <div class="heatmap-cell level-3">11</div>
+                    <div class="heatmap-cell level-2">5</div>
+                    <div class="heatmap-cell level-1">2</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell level-1">1</div>
+                    <div class="heatmap-cell level-2">4</div>
+                    <div class="heatmap-cell level-1">1</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell level-1">2</div>
+
+                    <!-- Friday -->
+                    <div class="heatmap-row-label">Pet</div>
+                    <div class="heatmap-cell level-2">4</div>
+                    <div class="heatmap-cell level-4">17</div>
+                    <div class="heatmap-cell level-5">28</div>
+                    <div class="heatmap-cell level-4">25</div>
+                    <div class="heatmap-cell level-4">19</div>
+                    <div class="heatmap-cell level-3">13</div>
+                    <div class="heatmap-cell level-2">6</div>
+                    <div class="heatmap-cell level-2">8</div>
+                    <div class="heatmap-cell level-3">14</div>
+                    <div class="heatmap-cell level-2">9</div>
+                    <div class="heatmap-cell level-1">3</div>
+                    <div class="heatmap-cell level-1">1</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell level-1">2</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell level-1">1</div>
+
+                    <!-- Saturday -->
+                    <div class="heatmap-row-label">Sob</div>
+                    <div class="heatmap-cell level-1">1</div>
+                    <div class="heatmap-cell level-2">5</div>
+                    <div class="heatmap-cell level-2">8</div>
+                    <div class="heatmap-cell level-2">6</div>
+                    <div class="heatmap-cell level-1">3</div>
+                    <div class="heatmap-cell level-1">2</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell level-1">1</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+
+                    <!-- Sunday -->
+                    <div class="heatmap-row-label">Ned</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell level-1">1</div>
+                    <div class="heatmap-cell level-1">2</div>
+                    <div class="heatmap-cell level-1">1</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                    <div class="heatmap-cell">0</div>
+                </div>
+                <div class="heatmap-legend">
+                    <span class="heatmap-legend-label">Manj</span>
+                    <div class="heatmap-legend-scale">
+                        <div class="heatmap-legend-box" style="background: var(--gray-100)"></div>
+                        <div class="heatmap-legend-box" style="background: var(--gray-200)"></div>
+                        <div class="heatmap-legend-box" style="background: var(--gray-300)"></div>
+                        <div class="heatmap-legend-box" style="background: var(--gray-500)"></div>
+                        <div class="heatmap-legend-box" style="background: var(--gray-700)"></div>
+                        <div class="heatmap-legend-box" style="background: var(--black)"></div>
+                    </div>
+                    <span class="heatmap-legend-label">Več</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Timeline -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-title">Dnevni pregled</span>
+                <span class="section-subtitle">Časovnica aktivnosti</span>
+            </div>
+            <div class="section-body">
+                <div class="timeline-y-labels">
+                    <span class="timeline-y-label">08.12.</span>
+                    <span class="timeline-y-label">07.12.</span>
+                    <span class="timeline-y-label">06.12.</span>
+                    <span class="timeline-y-label">05.12.</span>
+                    <span class="timeline-y-label">04.12.</span>
+                    <span class="timeline-y-label">03.12.</span>
+                    <span class="timeline-y-label">02.12.</span>
+                </div>
+                <div class="timeline">
+                    <div class="timeline-grid">
+                        <div class="timeline-grid-line"></div>
+                        <div class="timeline-grid-line"></div>
+                        <div class="timeline-grid-line"></div>
+                        <div class="timeline-grid-line"></div>
+                        <div class="timeline-grid-line"></div>
+                        <div class="timeline-grid-line"></div>
+                        <div class="timeline-grid-line"></div>
+                        <div class="timeline-grid-line"></div>
+                    </div>
+                    <!-- Sample timeline bars -->
+                    <div class="timeline-bar" style="left: 25%; width: 8%; top: 10px;" title="08:00-10:30 Čiščenje"></div>
+                    <div class="timeline-bar location-mp" style="left: 38%; width: 5%; top: 10px;" title="12:15-13:45 Sestanek"></div>
+                    <div class="timeline-bar" style="left: 50%; width: 6%; top: 10px;" title="14:00-15:30 Izobraževanje"></div>
+
+                    <div class="timeline-bar" style="left: 22%; width: 10%; top: 35px;"></div>
+                    <div class="timeline-bar" style="left: 45%; width: 7%; top: 35px;"></div>
+                    <div class="timeline-bar location-mp" style="left: 55%; width: 4%; top: 35px;"></div>
+
+                    <div class="timeline-bar location-mp" style="left: 28%; width: 6%; top: 60px;"></div>
+                    <div class="timeline-bar" style="left: 40%; width: 8%; top: 60px;"></div>
+                    <div class="timeline-bar" style="left: 52%; width: 5%; top: 60px;"></div>
+
+                    <div class="timeline-bar" style="left: 24%; width: 9%; top: 85px;"></div>
+                    <div class="timeline-bar location-mp" style="left: 48%; width: 6%; top: 85px;"></div>
+
+                    <div class="timeline-bar" style="left: 26%; width: 7%; top: 110px;"></div>
+                    <div class="timeline-bar" style="left: 42%; width: 10%; top: 110px;"></div>
+                    <div class="timeline-bar location-mp" style="left: 56%; width: 4%; top: 110px;"></div>
+
+                    <div class="timeline-bar location-mp" style="left: 20%; width: 8%; top: 135px;"></div>
+                    <div class="timeline-bar" style="left: 35%; width: 6%; top: 135px;"></div>
+                    <div class="timeline-bar" style="left: 50%; width: 7%; top: 135px;"></div>
+
+                    <div class="timeline-bar" style="left: 28%; width: 5%; top: 160px;"></div>
+                    <div class="timeline-bar" style="left: 38%; width: 8%; top: 160px;"></div>
+                    <div class="timeline-bar location-mp" style="left: 52%; width: 5%; top: 160px;"></div>
+                </div>
+                <div class="timeline-x-labels">
+                    <span class="timeline-x-label">06:00</span>
+                    <span class="timeline-x-label">09:00</span>
+                    <span class="timeline-x-label">12:00</span>
+                    <span class="timeline-x-label">15:00</span>
+                    <span class="timeline-x-label">18:00</span>
+                    <span class="timeline-x-label">21:00</span>
+                    <span class="timeline-x-label">00:00</span>
+                    <span class="timeline-x-label">03:00</span>
+                </div>
+                <div style="display: flex; gap: 24px; margin-top: 16px; justify-content: flex-end;">
+                    <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--gray-500);">
+                        <span class="location-dot sora"></span> Šoštanj
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--gray-500);">
+                        <span class="location-dot mp"></span> Mirna Peč
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-title">Podrobni podatki</span>
+                <span class="section-subtitle">Zadnjih 20 vnosov</span>
+            </div>
+            <div class="section-body" style="padding: 0;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Datum</th>
+                            <th>Delovni nalog</th>
+                            <th>Operacija</th>
+                            <th>Zaposleni</th>
+                            <th>Lokacija</th>
+                            <th>Začetek</th>
+                            <th>Konec</th>
+                            <th class="numeric">Ure</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>08.12.2024</td>
+                            <td class="highlight">900001</td>
+                            <td>Čiščenje</td>
+                            <td>Janez Novak</td>
+                            <td><span class="location-dot sora"></span>Šoštanj</td>
+                            <td>08:00</td>
+                            <td>10:30</td>
+                            <td class="numeric highlight">2.50</td>
+                        </tr>
+                        <tr>
+                            <td>08.12.2024</td>
+                            <td class="highlight">900002</td>
+                            <td>Sestanek</td>
+                            <td>Marija Horvat</td>
+                            <td><span class="location-dot mp"></span>Mirna Peč</td>
+                            <td>12:15</td>
+                            <td>13:45</td>
+                            <td class="numeric highlight">1.50</td>
+                        </tr>
+                        <tr>
+                            <td>08.12.2024</td>
+                            <td class="highlight">900003</td>
+                            <td>Izobraževanje</td>
+                            <td>Peter Kovač</td>
+                            <td><span class="location-dot sora"></span>Šoštanj</td>
+                            <td>14:00</td>
+                            <td>15:30</td>
+                            <td class="numeric highlight">1.50</td>
+                        </tr>
+                        <tr>
+                            <td>07.12.2024</td>
+                            <td class="highlight">900001</td>
+                            <td>Čiščenje</td>
+                            <td>Ana Krajnc</td>
+                            <td><span class="location-dot sora"></span>Šoštanj</td>
+                            <td>07:30</td>
+                            <td>11:00</td>
+                            <td class="numeric highlight">3.50</td>
+                        </tr>
+                        <tr>
+                            <td>07.12.2024</td>
+                            <td class="highlight">900004</td>
+                            <td>Transport</td>
+                            <td>Luka Zupan</td>
+                            <td><span class="location-dot mp"></span>Mirna Peč</td>
+                            <td>13:00</td>
+                            <td>14:30</td>
+                            <td class="numeric highlight">1.50</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="7">Skupaj (prikazano)</td>
+                            <td class="numeric">10.50</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        BRINOX d.o.o. · Režijska Dela · Generirano: 08.12.2024 14:30 · IBCS Design Preview
+    </footer>
+
+    <script>
+        // Interactive hover effects for heatmap
+        document.querySelectorAll('.heatmap-cell').forEach(cell => {
+            cell.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.15)';
+                this.style.zIndex = '10';
+            });
+            cell.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+                this.style.zIndex = '1';
+            });
+        });
+
+        // Timeline bar tooltips
+        document.querySelectorAll('.timeline-bar').forEach(bar => {
+            bar.addEventListener('mouseenter', function() {
+                this.style.opacity = '0.8';
+            });
+            bar.addEventListener('mouseleave', function() {
+                this.style.opacity = '1';
+            });
+        });
+
+        // Button interactions
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>
