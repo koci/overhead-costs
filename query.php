@@ -189,6 +189,10 @@ function getDateCondition($period, $type) {
             }
             break;
 
+        case 'all':
+            // Brez datumskega filtra - vsi podatki
+            return "";
+
         default:
             $start = $now->format('Y-m-01');
             $end = $now->format('Y-m-t');
@@ -202,7 +206,7 @@ $period = isset($_GET['period']) ? $_GET['period'] : 'current-month';
 $type = isset($_GET['type']) ? $_GET['type'] : 'current';
 
 // Validiraj vhodne parametre
-$validPeriods = ['current-month', 'prev-month', 'ytd'];
+$validPeriods = ['current-month', 'prev-month', 'ytd', 'all'];
 $validTypes = ['current', 'previous'];
 
 if (!in_array($period, $validPeriods)) {
