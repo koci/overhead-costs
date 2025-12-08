@@ -198,7 +198,8 @@ function getDateCondition($period, $type) {
             $end = $now->format('Y-m-t');
     }
 
-    return "AND act.\"Date Posting\" BETWEEN '{$start}' AND '{$end}'";
+    // SAP HANA format za datum
+    return "AND act.\"Date Posting\" BETWEEN TO_DATE('{$start}', 'YYYY-MM-DD') AND TO_DATE('{$end}', 'YYYY-MM-DD')";
 }
 
 // Obdelava zahteve

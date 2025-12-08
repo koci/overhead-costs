@@ -439,9 +439,10 @@
             <div class="filter-group">
                 <span class="filter-label">Obdobje</span>
                 <select class="filter-select" id="period-filter" onchange="loadData()">
-                    <option value="current-month" selected>Trenutni mesec</option>
-                    <option value="prev-month">Pretekli mesec</option>
+                    <option value="all" selected>Vsi podatki</option>
                     <option value="ytd">YTD</option>
+                    <option value="current-month">Trenutni mesec</option>
+                    <option value="prev-month">Pretekli mesec</option>
                 </select>
             </div>
             <div class="filter-group">
