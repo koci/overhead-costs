@@ -7,7 +7,9 @@
 header('Content-Type: application/json; charset=utf-8');
 
 // Vključi PHPMailer
-require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../lib/PHPMailer/src/Exception.php';
+require_once __DIR__ . '/../../lib/PHPMailer/src/PHPMailer.php';
+require_once __DIR__ . '/../../lib/PHPMailer/src/SMTP.php';
 require_once __DIR__ . '/../../db_config.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
