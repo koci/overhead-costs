@@ -201,11 +201,11 @@ $avgHours = $totalEntries > 0 ? $totalHours / $totalEntries : 0;
 $avgPerEmployee = $uniqueEmployees > 0 ? $totalHours / $uniqueEmployees : 0;
 
 // Top 10 zaposlenih
-uasort($employees, fn($a, $b) => $b['hours'] <=> $a['hours']);
+uasort($employees, function($a, $b) { return $b['hours'] <=> $a['hours']; });
 $top10Employees = array_slice($employees, 0, 10, true);
 
 // Sortiraj delovne naloge
-uasort($workOrders, fn($a, $b) => $b['hours'] <=> $a['hours']);
+uasort($workOrders, function($a, $b) { return $b['hours'] <=> $a['hours']; });
 
 // Vrhunec ura
 $peakHour = array_search(max($hourCounts), $hourCounts);
