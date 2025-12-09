@@ -107,8 +107,8 @@ try {
         END AS \"Location\",
         SUM(act.\"M Labor ACT H\") AS \"M Hours\"
     FROM \"BXBI\".\"vFT PP V_OP_TIME_ACT\" act
-    LEFT JOIN \"BXBI\".\"vDIM PP Order Details\" ordd ON act.\"Order ID\" = ordd.\"Order ID\"
-    LEFT JOIN \"BXBI\".\"vDIM Person\" per ON act.\"Person ID\" = per.\"Person ID\"
+    LEFT JOIN \"BXBI\".\"vMD XA Order Data\" ordd ON act.\"Order ID\" = ordd.\"Order ID\"
+    LEFT JOIN \"BXBI\".\"vMD HR Person\" per ON act.\"Person ID\" = per.\"Person ID\"
     WHERE ordd.\"Order Name\" LIKE '%reži%'
         AND act.\"Date Posting\" >= TO_DATE('$prevMonthStart', 'YYYY-MM-DD')
         AND act.\"Date Posting\" <= TO_DATE('$prevMonthEnd', 'YYYY-MM-DD')
