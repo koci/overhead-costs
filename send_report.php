@@ -111,8 +111,7 @@ try {
     LEFT JOIN \"BXBI\".\"vMD XA Order Data\" ordd ON act.\"Order ID\" = ordd.\"Order ID\"
     LEFT JOIN \"BXBI\".\"vMD HR Person\" per ON act.\"Person ID\" = per.\"Person ID\"
     WHERE act.\"Order ID\" IN({$orderIdsStr})
-        AND act.\"Date Posting\" >= TO_DATE('$prevMonthStart', 'YYYY-MM-DD')
-        AND act.\"Date Posting\" <= TO_DATE('$prevMonthEnd', 'YYYY-MM-DD')
+        AND act.\"Date Posting\" BETWEEN TO_DATE('{$prevMonthStart}', 'YYYY-MM-DD') AND TO_DATE('{$prevMonthEnd}', 'YYYY-MM-DD')
     GROUP BY
         TO_VARCHAR(act.\"Date Created\", 'DD.MM.YYYY'),
         TO_VARCHAR(act.\"Date Posting\", 'YYYY-MM-DD'),
