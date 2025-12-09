@@ -70,6 +70,32 @@ try {
         $result['info']['db_connected'] = ($conn !== false && $conn !== null);
     }
 
+    // Step 9: Check PHPMailer class
+    $result['step'] = 9;
+    $result['info']['phpmailer_class_exists'] = class_exists('PHPMailer');
+    $result['info']['phpmailer_ns_class_exists'] = class_exists('PHPMailer\\PHPMailer\\PHPMailer');
+
+    // Step 10: Try creating PHPMailer instance
+    $result['step'] = 10;
+    if (class_exists('PHPMailer\\PHPMailer\\PHPMailer')) {
+        $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
+        $result['info']['phpmailer_version'] = '6.x (namespace)';
+    } elseif (class_exists('PHPMailer')) {
+        $mail = new PHPMailer(true);
+        $result['info']['phpmailer_version'] = '5.x (no namespace)';
+    } else {
+        $result['info']['phpmailer_version'] = 'NOT FOUND';
+    }
+    $result['info']['mail_created'] = isset($mail);
+
+    // Step 11: Test a simple query
+    $result['step'] = 11;
+    if (function_exists('executeQuery') && isset($conn)) {
+        $testSql = "SELECT TOP 1 * FROM \"BXBI\".\"vDIM PP Order Details\" WHERE \"Order Name\" LIKE '%reži%'";
+        $testData = executeQuery($conn, $testSql);
+        $result['info']['test_query_rows'] = count($testData);
+    }
+
     $result['success'] = true;
     $result['message'] = 'Vsi koraki uspešni';
 
