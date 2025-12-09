@@ -53,7 +53,7 @@ SELECT
     per.\"Person Cost Center ID Name\",
     CASE
         WHEN per.\"Person Cost Center ID Name\" LIKE '%MP%' THEN 'Mirna Pec'
-        ELSE 'Sostanj'
+        ELSE 'Sora'
     END AS \"Location\",
     SUM(act.\"M Labor ACT H\") AS \"M Hours\"
 FROM \"BXBI\".\"vFT PP V_OP_TIME_ACT\" act
@@ -90,7 +90,7 @@ if ($data === false || empty($data)) {
 $totalEntries = count($data);
 $totalHours = 0;
 $employees = [];
-$locations = ['Sostanj' => 0, 'Mirna Pec' => 0];
+$locations = ['Sora' => 0, 'Mirna Pec' => 0];
 $workOrders = [];
 $hourCounts = array_fill(0, 24, 0);
 
@@ -102,13 +102,13 @@ foreach ($data as $row) {
     $empName = $row['Person Name'] ?? 'Neznano';
     $empId = $row['Person ID'] ?? 'unknown';
     if (!isset($employees[$empId])) {
-        $employees[$empId] = ['name' => $empName, 'hours' => 0, 'count' => 0, 'location' => $row['Location'] ?? 'Sostanj'];
+        $employees[$empId] = ['name' => $empName, 'hours' => 0, 'count' => 0, 'location' => $row['Location'] ?? 'Sora'];
     }
     $employees[$empId]['hours'] += $hours;
     $employees[$empId]['count']++;
 
     // Lokacije
-    $loc = ($row['Location'] ?? 'Sostanj') === 'Mirna Pec' ? 'Mirna Pec' : 'Sostanj';
+    $loc = ($row['Location'] ?? 'Sora') === 'Mirna Pec' ? 'Mirna Pec' : 'Sora';
     $locations[$loc] += $hours;
 
     // Delovni nalogi
@@ -130,9 +130,9 @@ foreach ($data as $row) {
 // Izračuni
 $uniqueEmployees = count($employees);
 $avgPerEntry = $totalEntries > 0 ? $totalHours / $totalEntries : 0;
-$totalLocHours = $locations['Sostanj'] + $locations['Mirna Pec'];
-$sostanjPct = $totalLocHours > 0 ? round($locations['Sostanj'] / $totalLocHours * 100) : 0;
-$mpPct = 100 - $sostanjPct;
+$totalLocHours = $locations['Sora'] + $locations['Mirna Pec'];
+$soraPct = $totalLocHours > 0 ? round($locations['Sora'] / $totalLocHours * 100) : 0;
+$mpPct = 100 - $soraPct;
 
 // Sortiranje
 uasort($employees, function($a, $b) { return $b['hours'] <=> $a['hours']; });
@@ -226,14 +226,14 @@ Za več detajlnih informacij si lahko ogledate poročilo na spodnji povezavi.
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td width="48%" style="background-color:#2c3e50; padding:20px; vertical-align:top;">
-<div style="color:#ffffff; font-size:13px; font-weight:bold; margin-bottom:5px;">ŠOŠTANJ</div>
-<div style="color:#ffffff; font-size:28px; font-weight:bold;">' . number_format($locations['Sostanj'], 1, ',', '.') . ' <span style="font-size:14px;">ur</span></div>
-<div style="color:#bdc3c7; font-size:12px; margin-top:5px;">' . $sostanjPct . '% vseh ur</div>
+<div style="color:#ffffff; font-size:13px; font-weight:bold; margin-bottom:5px;">SORA</div>
+<div style="color:#ffffff; font-size:28px; font-weight:bold;">' . number_format($locations['Sora'], 1, ',', '.') . ' <span style="font-size:14px;">ur</span></div>
+<div style="color:#bdc3c7; font-size:12px; margin-top:5px;">' . $soraPct . '% vseh ur</div>
 <!-- PROGRESS BAR -->
 <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-top:10px;">
 <tr>
 <td style="background-color:#1a252f; height:8px; width:100%;">
-<table border="0" cellpadding="0" cellspacing="0" height="8" style="width:' . $sostanjPct . '%;"><tr><td style="background-color:#3498db;"></td></tr></table>
+<table border="0" cellpadding="0" cellspacing="0" height="8" style="width:' . $soraPct . '%;"><tr><td style="background-color:#3498db;"></td></tr></table>
 </td>
 </tr>
 </table>
@@ -263,8 +263,8 @@ Za več detajlnih informacij si lahko ogledate poročilo na spodnji povezavi.
 <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#fff3cd; border-left:4px solid #ffc107;">
 <tr>
 <td style="padding:15px 20px;">
-<strong style="color:#856404;">&#9200; Vrhunec prijav:</strong>
-<span style="color:#856404;">Največ prijav ob <strong>' . str_pad($peakHour, 2, '0', STR_PAD_LEFT) . ':00</strong> uri (' . $peakCount . ' evidenc)</span>
+<strong style="color:#856404;">&#9200; Ura, kjer se zgodi največ prijav:</strong>
+<span style="color:#856404;"><strong>' . str_pad($peakHour, 2, '0', STR_PAD_LEFT) . ':00</strong> (' . $peakCount . ' evidenc)</span>
 </td>
 </tr>
 </table>
@@ -323,7 +323,7 @@ $rank = 1;
 $maxEmpHours = !empty($top10) ? max(array_column($top10, 'hours')) : 1;
 foreach ($top10 as $emp) {
     $bgColor = $rank % 2 === 0 ? '#f8f9fa' : '#ffffff';
-    $lokacija = $emp['location'] === 'Mirna Pec' ? 'Mirna Peč' : 'Šoštanj';
+    $lokacija = $emp['location'] === 'Mirna Pec' ? 'Mirna Peč' : 'Sora';
     $lokBg = $emp['location'] === 'Mirna Pec' ? '#d5f5e3' : '#d6eaf8';
     $lokColor = $emp['location'] === 'Mirna Pec' ? '#0e6655' : '#1a5276';
     $barWidth = round($emp['hours'] / $maxEmpHours * 100);
@@ -367,7 +367,7 @@ $html .= '
 <!-- FOOTER -->
 <tr>
 <td style="background-color:#2c3e50; padding:25px 40px; text-align:center;">
-<p style="margin:0 0 5px 0; color:#bdc3c7; font-size:12px;">Brinox d.o.o. | Režijska dela - Avtomatsko poročilo</p>
+<p style="margin:0 0 5px 0; color:#bdc3c7; font-size:12px;">Brinox d.o.o. | Režijska dela</p>
 <p style="margin:0; color:#7f8c8d; font-size:11px;">Generirano: ' . date('d.m.Y') . ' ob ' . date('H:i') . '</p>
 </td>
 </tr>
@@ -400,11 +400,11 @@ try {
     $mail->Port = 25;
     $mail->SMTPAuth = false;
 
-    $mail->setFrom('noreply@brinox.eu', 'Brinox Porocila');
+    $mail->setFrom('noreply@brinox.eu', 'BriNotify');
     $mail->addAddress('matic.kocijancic@brinox.eu');
 
     $mail->isHTML(true);
-    $mail->Subject = '=?UTF-8?B?' . base64_encode('Režijska dela - Poročilo ' . $obdobje) . '?=';
+    $mail->Subject = '=?UTF-8?B?' . base64_encode('Režijska dela - poročilo ' . lcfirst($mesec) . ' ' . $leto) . '?=';
     $mail->Body = $html;
     $mail->AltBody = "Rezijska dela - $obdobje\nEvidenc: $totalEntries\nUr: " . number_format($totalHours, 1) . "\n\nVec info: $reportUrl";
 
