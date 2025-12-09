@@ -8,9 +8,26 @@
  */
 
 error_reporting(E_ALL);
-ini_set('display_errors', 0);
+ini_set('display_errors', 1);
+ini_set('log_errors', 1);
 
 header('Content-Type: application/json; charset=utf-8');
+
+// Debug mode - prikaže napake
+set_error_handler(function($errno, $errstr, $errfile, $errline) {
+    throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+});
+
+set_exception_handler(function($e) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'error' => $e->getMessage(),
+        'file' => basename($e->getFile()),
+        'line' => $e->getLine()
+    ]);
+    exit;
+});
 
 // PHPMailer
 $phpmailerPath = __DIR__ . '/../../lib/PHPMailer/src/';
@@ -33,7 +50,13 @@ foreach ($requiredFiles as $file) {
 require_once $phpmailerPath . 'Exception.php';
 require_once $phpmailerPath . 'PHPMailer.php';
 require_once $phpmailerPath . 'SMTP.php';
-require_once __DIR__ . '/../../db_config.php';
+
+// Database config
+$dbConfigPath = __DIR__ . '/../../db_config.php';
+if (!file_exists($dbConfigPath)) {
+    die(json_encode(['success' => false, 'error' => 'db_config.php manjka', 'path' => $dbConfigPath]));
+}
+require_once $dbConfigPath;
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -44,15 +67,13 @@ use PHPMailer\PHPMailer\Exception;
 
 $prevMonthStart = date('Y-m-01', strtotime('first day of previous month'));
 $prevMonthEnd = date('Y-m-t', strtotime('last day of previous month'));
-$prevMonthName = strftime('%B %Y', strtotime('first day of previous month'));
 $prevMonthNameSI = [
-    'January' => 'Januar', 'February' => 'Februar', 'March' => 'Marec',
-    'April' => 'April', 'May' => 'Maj', 'June' => 'Junij',
-    'July' => 'Julij', 'August' => 'Avgust', 'September' => 'September',
-    'October' => 'Oktober', 'November' => 'November', 'December' => 'December'
+    1 => 'Januar', 2 => 'Februar', 3 => 'Marec', 4 => 'April',
+    5 => 'Maj', 6 => 'Junij', 7 => 'Julij', 8 => 'Avgust',
+    9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'December'
 ];
-$monthEN = date('F', strtotime('first day of previous month'));
-$monthSI = $prevMonthNameSI[$monthEN] ?? $monthEN;
+$monthNum = (int)date('n', strtotime('first day of previous month'));
+$monthSI = $prevMonthNameSI[$monthNum] ?? 'Mesec';
 $yearNum = date('Y', strtotime('first day of previous month'));
 $periodLabel = "$monthSI $yearNum";
 
