@@ -53,8 +53,25 @@ use PHPMailer\PHPMailer\Exception;
 $input = file_get_contents('php://input');
 $data = json_decode($input, true);
 
-if (!$data) {
-    echo json_encode(['success' => false, 'error' => 'Neveljavni podatki']);
+// Debug - če ni POST podatkov
+if (!$data || empty($data)) {
+    // Če je GET request (za testiranje)
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+        echo json_encode([
+            'success' => false,
+            'error' => 'Uporabi POST request z JSON podatki',
+            'phpmailer_path' => $phpmailerPath,
+            'files_exist' => array_map('file_exists', $requiredFiles)
+        ]);
+        exit;
+    }
+
+    echo json_encode([
+        'success' => false,
+        'error' => 'Neveljavni ali prazni podatki',
+        'input_length' => strlen($input),
+        'input_preview' => substr($input, 0, 100)
+    ]);
     exit;
 }
 
