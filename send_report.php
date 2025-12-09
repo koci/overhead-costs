@@ -58,8 +58,15 @@ if (!file_exists($dbConfigPath)) {
 }
 require_once $dbConfigPath;
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+// PHPMailer - podpora za obe verziji (z namespace in brez)
+if (class_exists('PHPMailer\\PHPMailer\\PHPMailer')) {
+    // Nova verzija (6.x) z namespace
+    class_alias('PHPMailer\\PHPMailer\\PHPMailer', 'PHPMailerClass');
+    class_alias('PHPMailer\\PHPMailer\\Exception', 'PHPMailerException');
+} else {
+    // Stara verzija (5.x) brez namespace
+    class_alias('PHPMailer', 'PHPMailerClass');
+}
 
 // ============================================================================
 // PRIDOBI PODATKE IZ BAZE ZA PREJŠNJI MESEC
@@ -524,7 +531,7 @@ $html .= '
 // ============================================================================
 
 try {
-    $mail = new PHPMailer(true);
+    $mail = new PHPMailerClass(true);
     $mail->CharSet = 'UTF-8';
     $mail->isSMTP();
 
