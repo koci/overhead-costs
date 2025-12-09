@@ -87,6 +87,10 @@ $periodLabel = "$monthSI $yearNum";
 try {
     $conn = connectHana();
 
+    // Isti Order ID-ji kot v query.php
+    $orderIds = ['1167362','1167363','1167364','1167365','1167366','1167367','1167368','1167369','1167370','1167371','1167372','1167373','1167374'];
+    $orderIdsStr = "'" . implode("','", $orderIds) . "'";
+
     $sql = "
     SELECT
         TO_VARCHAR(act.\"Date Created\", 'DD.MM.YYYY') AS \"Date Created\",
@@ -106,7 +110,7 @@ try {
     FROM \"BXBI\".\"vFT PP V_OP_TIME_ACT\" act
     LEFT JOIN \"BXBI\".\"vMD XA Order Data\" ordd ON act.\"Order ID\" = ordd.\"Order ID\"
     LEFT JOIN \"BXBI\".\"vMD HR Person\" per ON act.\"Person ID\" = per.\"Person ID\"
-    WHERE ordd.\"Order Name\" LIKE '%reži%'
+    WHERE act.\"Order ID\" IN({$orderIdsStr})
         AND act.\"Date Posting\" >= TO_DATE('$prevMonthStart', 'YYYY-MM-DD')
         AND act.\"Date Posting\" <= TO_DATE('$prevMonthEnd', 'YYYY-MM-DD')
     GROUP BY
