@@ -46,9 +46,11 @@ SELECT
     TO_VARCHAR(act.\"Date Created\", 'DD.MM.YYYY') AS \"Date Created\",
     TO_VARCHAR(act.\"Date Posting\", 'YYYY-MM-DD') AS \"Date Posting\",
     act.\"Actual Start Time\",
+    act.\"Actual End Time\",
     act.\"Order ID\",
     ordd.\"Order Name\",
     act.\"Person ID\",
+    act.\"Operation ID\",
     per.\"Person Name\",
     per.\"Person Cost Center ID Name\",
     CASE
@@ -72,10 +74,19 @@ GROUP BY
     TO_VARCHAR(act.\"Date Posting\", 'YYYY-MM-DD'),
     act.\"Order ID\",
     act.\"Person ID\",
+    act.\"Operation ID\",
+    op.\"Operation Text\",
+    op.\"Order Sequence Operation ID Text\",
+    op.\"Order Operation ID Text\",
+    op.\"Work Center Name\",
+    op.\"Work Center ID Name\",
     per.\"Person Name\",
     per.\"Person Cost Center ID Name\",
+    per.\"Person Group Name\",
     ordd.\"Order Name\",
-    act.\"Actual Start Time\"
+    ordd.\"Order Type ID Name\",
+    act.\"Actual Start Time\",
+    act.\"Actual End Time\"
 ORDER BY TO_VARCHAR(act.\"Date Posting\", 'YYYY-MM-DD') DESC
 ";
 
