@@ -107,7 +107,6 @@ try {
     LEFT JOIN \"BXBI\".\"vMD XA Order Data\" ordd ON act.\"Order ID\" = ordd.\"Order ID\"
     LEFT JOIN \"BXBI\".\"vMD HR Person\" per ON act.\"Person ID\" = per.\"Person ID\"
     WHERE ordd.\"Order Name\" LIKE '%reži%'
-        AND act.\"Report Data Version\" = 'Actual'
         AND act.\"Date Posting\" >= TO_DATE('$prevMonthStart', 'YYYY-MM-DD')
         AND act.\"Date Posting\" <= TO_DATE('$prevMonthEnd', 'YYYY-MM-DD')
     GROUP BY
