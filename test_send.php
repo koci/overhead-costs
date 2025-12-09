@@ -96,6 +96,48 @@ try {
         $result['info']['test_query_rows'] = count($testData);
     }
 
+    // Step 12: Test the actual query from send_report.php
+    $result['step'] = 12;
+    $prevMonthStart = date('Y-m-01', strtotime('first day of previous month'));
+    $prevMonthEnd = date('Y-m-t', strtotime('last day of previous month'));
+    $result['info']['period'] = $prevMonthStart . ' to ' . $prevMonthEnd;
+
+    $sql = "
+    SELECT TOP 10
+        TO_VARCHAR(act.\"Date Created\", 'DD.MM.YYYY') AS \"Date Created\",
+        TO_VARCHAR(act.\"Date Posting\", 'YYYY-MM-DD') AS \"Date Posting\",
+        act.\"Actual Start Time\",
+        act.\"Actual End Time\",
+        act.\"Order ID\",
+        ordd.\"Order Name\",
+        act.\"Person ID\",
+        per.\"Person Name\",
+        per.\"Person Cost Center ID Name\",
+        SUM(act.\"M Labor ACT H\") AS \"M Hours\"
+    FROM \"BXBI\".\"vFT PP V_OP_TIME_ACT\" act
+    LEFT JOIN \"BXBI\".\"vDIM PP Order Details\" ordd ON act.\"Order ID\" = ordd.\"Order ID\"
+    LEFT JOIN \"BXBI\".\"vDIM Person\" per ON act.\"Person ID\" = per.\"Person ID\"
+    WHERE ordd.\"Order Name\" LIKE '%reži%'
+        AND act.\"Date Posting\" >= TO_DATE('$prevMonthStart', 'YYYY-MM-DD')
+        AND act.\"Date Posting\" <= TO_DATE('$prevMonthEnd', 'YYYY-MM-DD')
+    GROUP BY
+        act.\"Date Created\",
+        act.\"Date Posting\",
+        act.\"Actual Start Time\",
+        act.\"Actual End Time\",
+        act.\"Order ID\",
+        ordd.\"Order Name\",
+        act.\"Person ID\",
+        per.\"Person Name\",
+        per.\"Person Cost Center ID Name\"
+    ";
+
+    $data = executeQuery($conn, $sql);
+    $result['info']['full_query_rows'] = count($data);
+    if (count($data) > 0) {
+        $result['info']['sample_row'] = array_keys($data[0]);
+    }
+
     $result['success'] = true;
     $result['message'] = 'Vsi koraki uspešni';
 
