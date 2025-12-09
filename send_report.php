@@ -72,16 +72,17 @@ if (class_exists('PHPMailer\\PHPMailer\\PHPMailer')) {
 // PRIDOBI PODATKE IZ BAZE ZA PREJŠNJI MESEC
 // ============================================================================
 
-$prevMonthStart = date('Y-m-01', strtotime('first day of previous month'));
-$prevMonthEnd = date('Y-m-t', strtotime('last day of previous month'));
+$prevMonth = new DateTime('first day of previous month');
+$prevMonthStart = $prevMonth->format('Y-m-01');
+$prevMonthEnd = $prevMonth->format('Y-m-t');
 $prevMonthNameSI = [
     1 => 'Januar', 2 => 'Februar', 3 => 'Marec', 4 => 'April',
     5 => 'Maj', 6 => 'Junij', 7 => 'Julij', 8 => 'Avgust',
     9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'December'
 ];
-$monthNum = (int)date('n', strtotime('first day of previous month'));
+$monthNum = (int)$prevMonth->format('n');
 $monthSI = $prevMonthNameSI[$monthNum] ?? 'Mesec';
-$yearNum = date('Y', strtotime('first day of previous month'));
+$yearNum = $prevMonth->format('Y');
 $periodLabel = "$monthSI $yearNum";
 
 try {
@@ -110,8 +111,8 @@ try {
     FROM \"BXBI\".\"vFT PP V_OP_TIME_ACT\" act
     LEFT JOIN \"BXBI\".\"vMD XA Order Data\" ordd ON act.\"Order ID\" = ordd.\"Order ID\"
     LEFT JOIN \"BXBI\".\"vMD HR Person\" per ON act.\"Person ID\" = per.\"Person ID\"
-    WHERE act.\"Order ID\" IN({$orderIdsStr})
-        AND act.\"Date Posting\" BETWEEN TO_DATE('{$prevMonthStart}', 'YYYY-MM-DD') AND TO_DATE('{$prevMonthEnd}', 'YYYY-MM-DD')
+    WHERE act.\"Order ID\" IN(" . $orderIdsStr . ")
+        AND act.\"Date Posting\" BETWEEN TO_DATE('" . $prevMonthStart . "', 'YYYY-MM-DD') AND TO_DATE('" . $prevMonthEnd . "', 'YYYY-MM-DD')
     GROUP BY
         TO_VARCHAR(act.\"Date Created\", 'DD.MM.YYYY'),
         TO_VARCHAR(act.\"Date Posting\", 'YYYY-MM-DD'),
